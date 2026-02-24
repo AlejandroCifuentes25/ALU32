@@ -1,4 +1,5 @@
 # ALU32
+Nombres: Julian Jimenez y Alejandro Cifuentes
 ## Tabla de verdad
 op0 | op1 | Operación | Descripción |
 | :---: | :---: | :--- | :--- |

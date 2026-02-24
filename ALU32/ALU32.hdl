@@ -1,0 +1,39 @@
+/**
+ * ALU de 32 bits - Versión sin guiones
+ */
+CHIP ALU32 {
+
+    IN  xlow[16], xhigh[16],
+        ylow[16], yhigh[16],
+        zlow[16], zhigh[16],
+        op0, op1;
+
+    OUT outlow[16], outhigh[16],
+        zr, ng;
+
+    PARTS:
+    // ==============================================
+    // PARTE BAJA (Bits 0-15)
+    // ==============================================
+    // cin recibe op1 para el +1 necesario en la resta (complemento a 2)
+    ALU16op(x=xlow, y=ylow, z=zlow, 
+            op0=op0, op1=op1, cin=op1, 
+            out=outlow, cout=carryLtoH, zr=zL, ng=nL);
+
+    // ==============================================
+    // PARTE ALTA (Bits 16-31)
+    // ==============================================
+    // cin recibe el acarreo que viene de la parte baja
+    ALU16op(x=xhigh, y=yhigh, z=zhigh, 
+            op0=op0, op1=op1, cin=carryLtoH, 
+            out=outhigh, cout=coutFinal, zr=zH, ng=nH);
+
+    // ==============================================
+    // LÓGICA DE FLAGS
+    // ==============================================
+    // ZR: 1 solo si ambas mitades son cero
+    And(a=zL, b=zH, out=zr);
+    
+    // NG: El bit de signo de la parte alta define el signo total
+    Or(a=nH, b=false, out=ng);
+}

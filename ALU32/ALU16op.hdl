@@ -1,0 +1,154 @@
+CHIP ALU16op {
+    IN  x[16], y[16], z[16],
+        op0, op1, cin;
+    
+    OUT out[16], cout, zr, ng;
+
+    PARTS:
+    // ==============================================
+    // 1. PREPROCESAMIENTO X (X o -X)
+    // ==============================================
+
+    Not(in=x[0], out=notX0);
+    Not(in=x[1], out=notX1);
+    Not(in=x[2], out=notX2);
+    Not(in=x[3], out=notX3);
+    Not(in=x[4], out=notX4);
+    Not(in=x[5], out=notX5);
+    Not(in=x[6], out=notX6);
+    Not(in=x[7], out=notX7);
+    Not(in=x[8], out=notX8);
+    Not(in=x[9], out=notX9);
+    Not(in=x[10], out=notX10);
+    Not(in=x[11], out=notX11);
+    Not(in=x[12], out=notX12);
+    Not(in=x[13], out=notX13);
+    Not(in=x[14], out=notX14);
+    Not(in=x[15], out=notX15);
+
+    Mux(a=x[0], b=notX0, sel=op1, out=muxX0);
+    Mux(a=x[1], b=notX1, sel=op1, out=muxX1);
+    Mux(a=x[2], b=notX2, sel=op1, out=muxX2);
+    Mux(a=x[3], b=notX3, sel=op1, out=muxX3);
+    Mux(a=x[4], b=notX4, sel=op1, out=muxX4);
+    Mux(a=x[5], b=notX5, sel=op1, out=muxX5);
+    Mux(a=x[6], b=notX6, sel=op1, out=muxX6);
+    Mux(a=x[7], b=notX7, sel=op1, out=muxX7);
+    Mux(a=x[8], b=notX8, sel=op1, out=muxX8);
+    Mux(a=x[9], b=notX9, sel=op1, out=muxX9);
+    Mux(a=x[10], b=notX10, sel=op1, out=muxX10);
+    Mux(a=x[11], b=notX11, sel=op1, out=muxX11);
+    Mux(a=x[12], b=notX12, sel=op1, out=muxX12);
+    Mux(a=x[13], b=notX13, sel=op1, out=muxX13);
+    Mux(a=x[14], b=notX14, sel=op1, out=muxX14);
+    Mux(a=x[15], b=notX15, sel=op1, out=muxX15);
+
+    // ==============================================
+    // 2. PRIMERA SUMA (X/-X + Y)
+    // ==============================================
+
+    FullAdder(a=muxX0, b=y[0], c=cin, sum=s0, carry=c1);
+    FullAdder(a=muxX1, b=y[1], c=c1, sum=s1, carry=c2);
+    FullAdder(a=muxX2, b=y[2], c=c2, sum=s2, carry=c3);
+    FullAdder(a=muxX3, b=y[3], c=c3, sum=s3, carry=c4);
+    FullAdder(a=muxX4, b=y[4], c=c4, sum=s4, carry=c5);
+    FullAdder(a=muxX5, b=y[5], c=c5, sum=s5, carry=c6);
+    FullAdder(a=muxX6, b=y[6], c=c6, sum=s6, carry=c7);
+    FullAdder(a=muxX7, b=y[7], c=c7, sum=s7, carry=c8);
+    FullAdder(a=muxX8, b=y[8], c=c8, sum=s8, carry=c9);
+    FullAdder(a=muxX9, b=y[9], c=c9, sum=s9, carry=c10);
+    FullAdder(a=muxX10, b=y[10], c=c10, sum=s10, carry=c11);
+    FullAdder(a=muxX11, b=y[11], c=c11, sum=s11, carry=c12);
+    FullAdder(a=muxX12, b=y[12], c=c12, sum=s12, carry=c13);
+    FullAdder(a=muxX13, b=y[13], c=c13, sum=s13, carry=c14);
+    FullAdder(a=muxX14, b=y[14], c=c14, sum=s14, carry=c15);
+    FullAdder(a=muxX15, b=y[15], c=c15, sum=s15, carry=carryXY);
+
+    // ==============================================
+    // 3. SELECCIÓN DE Z
+    // ==============================================
+
+    Or(a=op0, b=op1, out=useZ);
+
+    Mux(a=false, b=z[0], sel=useZ, out=selZ0);
+    Mux(a=false, b=z[1], sel=useZ, out=selZ1);
+    Mux(a=false, b=z[2], sel=useZ, out=selZ2);
+    Mux(a=false, b=z[3], sel=useZ, out=selZ3);
+    Mux(a=false, b=z[4], sel=useZ, out=selZ4);
+    Mux(a=false, b=z[5], sel=useZ, out=selZ5);
+    Mux(a=false, b=z[6], sel=useZ, out=selZ6);
+    Mux(a=false, b=z[7], sel=useZ, out=selZ7);
+    Mux(a=false, b=z[8], sel=useZ, out=selZ8);
+    Mux(a=false, b=z[9], sel=useZ, out=selZ9);
+    Mux(a=false, b=z[10], sel=useZ, out=selZ10);
+    Mux(a=false, b=z[11], sel=useZ, out=selZ11);
+    Mux(a=false, b=z[12], sel=useZ, out=selZ12);
+    Mux(a=false, b=z[13], sel=useZ, out=selZ13);
+    Mux(a=false, b=z[14], sel=useZ, out=selZ14);
+    Mux(a=false, b=z[15], sel=useZ, out=selZ15);
+
+    // ==============================================
+    // 4. SUMA FINAL
+    // ==============================================
+
+    FullAdder(a=s0, b=selZ0, c=false, sum=t0, carry=d1);
+    FullAdder(a=s1, b=selZ1, c=d1, sum=t1, carry=d2);
+    FullAdder(a=s2, b=selZ2, c=d2, sum=t2, carry=d3);
+    FullAdder(a=s3, b=selZ3, c=d3, sum=t3, carry=d4);
+    FullAdder(a=s4, b=selZ4, c=d4, sum=t4, carry=d5);
+    FullAdder(a=s5, b=selZ5, c=d5, sum=t5, carry=d6);
+    FullAdder(a=s6, b=selZ6, c=d6, sum=t6, carry=d7);
+    FullAdder(a=s7, b=selZ7, c=d7, sum=t7, carry=d8);
+    FullAdder(a=s8, b=selZ8, c=d8, sum=t8, carry=d9);
+    FullAdder(a=s9, b=selZ9, c=d9, sum=t9, carry=d10);
+    FullAdder(a=s10, b=selZ10, c=d10, sum=t10, carry=d11);
+    FullAdder(a=s11, b=selZ11, c=d11, sum=t11, carry=d12);
+    FullAdder(a=s12, b=selZ12, c=d12, sum=t12, carry=d13);
+    FullAdder(a=s13, b=selZ13, c=d13, sum=t13, carry=d14);
+    FullAdder(a=s14, b=selZ14, c=d14, sum=t14, carry=d15);
+    FullAdder(a=s15, b=selZ15, c=d15, sum=t15, carry=cout);
+
+    // ==============================================
+    // 5. CONECTAR SALIDA
+    // ==============================================
+
+    Or(a=t0, b=false, out=out[0]);
+    Or(a=t1, b=false, out=out[1]);
+    Or(a=t2, b=false, out=out[2]);
+    Or(a=t3, b=false, out=out[3]);
+    Or(a=t4, b=false, out=out[4]);
+    Or(a=t5, b=false, out=out[5]);
+    Or(a=t6, b=false, out=out[6]);
+    Or(a=t7, b=false, out=out[7]);
+    Or(a=t8, b=false, out=out[8]);
+    Or(a=t9, b=false, out=out[9]);
+    Or(a=t10, b=false, out=out[10]);
+    Or(a=t11, b=false, out=out[11]);
+    Or(a=t12, b=false, out=out[12]);
+    Or(a=t13, b=false, out=out[13]);
+    Or(a=t14, b=false, out=out[14]);
+    Or(a=t15, b=false, out=out[15]);
+
+    // ==============================================
+    // 6. FLAGS
+    // ==============================================
+
+    Or(a=t15, b=false, out=ng);
+
+    Or(a=t0, b=t1, out=o1);
+    Or(a=o1, b=t2, out=o2);
+    Or(a=o2, b=t3, out=o3);
+    Or(a=o3, b=t4, out=o4);
+    Or(a=o4, b=t5, out=o5);
+    Or(a=o5, b=t6, out=o6);
+    Or(a=o6, b=t7, out=o7);
+    Or(a=o7, b=t8, out=o8);
+    Or(a=o8, b=t9, out=o9);
+    Or(a=o9, b=t10, out=o10);
+    Or(a=o10, b=t11, out=o11);
+    Or(a=o11, b=t12, out=o12);
+    Or(a=o12, b=t13, out=o13);
+    Or(a=o13, b=t14, out=o14);
+    Or(a=o14, b=t15, out=o15);
+    Not(in=o15, out=zr);
+}

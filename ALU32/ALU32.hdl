@@ -1,6 +1,4 @@
-/**
- * ALU de 32 bits - Versión sin guiones
- */
+
 CHIP ALU32 {
 
     IN  xlow[16], xhigh[16],
@@ -36,4 +34,5 @@ CHIP ALU32 {
     
     // NG: El bit de signo de la parte alta define el signo total
     Or(a=nH, b=false, out=ng);
+
 }
